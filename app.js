@@ -2,19 +2,46 @@ import cookieParser from "cookie-parser";
 import express, { urlencoded } from "express";
 import cors from "cors";
 
-const app = express(); 
+const app = express();
 
-app.use(express.json());
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials : true
-}))
-app.use(express.json({limit: "16kb"}))
-app.use(urlencoded({extended: true, limit: "16kb"}))
-app.use(express.static("public"))
-app.use(cookieParser())
+app.use(
+    cors({
+        origin: process.env.CORS_ORIGIN || "*",
+        credentials: true,
+    })
+);
+app.use(express.json({ limit: "16kb" }));
+app.use(urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.static("public"));
+app.use(cookieParser());
 
-import userRouter from './routes/user.routes.js'
+// Health check
+app.get("/api/v1/health", (_req, res) => {
+    res.status(200).json({ success: true, message: "HackMate API is healthy" });
+});
 
-app.use('/api/v1/users', userRouter)
+// Route imports
+import userRouter from "./src/routes/user.routes.js";
+import hackathonRouter from "./src/routes/hackathon.routes.js";
+import teamRouter from "./src/routes/team.routes.js";
+import joinRequestRouter from "./src/routes/joinRequest.routes.js";
+import { errorHandler } from "./src/middlewares/error.middleware.js";
+
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/hackathons", hackathonRouter);
+app.use("/api/v1/teams", teamRouter);
+app.use("/api/v1/join-requests", joinRequestRouter);
+
+// 404 fallback
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        status: 404,
+        message: `Route not found: ${req.method} ${req.originalUrl}`,
+    });
+});
+
+// Global error handler (must be last)
+app.use(errorHandler);
+
 export default app;

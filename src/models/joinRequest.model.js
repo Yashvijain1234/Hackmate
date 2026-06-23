@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose, {Schema} from "mongoose";
  
 const joinRequestSchema = new mongoose.Schema(
   {
@@ -24,4 +24,4 @@ const joinRequestSchema = new mongoose.Schema(
 // Prevents duplicate pending requests between the same user & team
 joinRequestSchema.index({ team: 1, user: 1 }, { unique: true });
  
-module.exports = mongoose.model('JoinRequest', joinRequestSchema);
+export const JoinRequest = mongoose.model('JoinRequest', joinRequestSchema);

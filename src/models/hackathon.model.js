@@ -34,4 +34,4 @@ const hackathonSchema = new Schema({
 // Speeds up "show upcoming hackathons sorted by date" queries
 hackathonSchema.index({ startDate: 1, status: 1 });
  
-module.exports = mongoose.model('Hackathon', hackathonSchema);
+export const Hackathon = mongoose.model('Hackathon', hackathonSchema);

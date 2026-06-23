@@ -60,6 +60,6 @@ teamSchema.virtual('currentSize').get(function () {
 
 teamSchema.index({ hackathon: 1, isOpen: 1 });
  
-module.exports = mongoose.model('Team', teamSchema);
+export const Team = mongoose.model('Team', teamSchema);
  
 
